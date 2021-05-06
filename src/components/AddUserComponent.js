@@ -18,6 +18,7 @@ class AddUserComponent extends React.Component {
         return (
             <div style={{ height: 400, width: '100%' }}>
                 <h1 align="left">連線帳號新增</h1>
+                <h1 align="left">連線帳號新增</h1>
                 <label>服務名稱</label>
                 <input></input>
                 {/* <button>+ 新增一筆</button> */}
