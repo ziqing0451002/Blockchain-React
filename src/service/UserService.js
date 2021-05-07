@@ -6,6 +6,10 @@ class UserService{
     getUser(){
         return axios.get(USERINFO_REST_API_URL);
     }
+
+    AddUser(jsonInput){
+        return axios.post(USERINFO_REST_API_URL, jsonInput);
+    }
 }
 
 export default new UserService();
