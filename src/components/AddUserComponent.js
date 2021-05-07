@@ -1,9 +1,25 @@
 import React from 'react';
-// import * as React from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import UserService from '../service/UserService'
+// import AddUserModal from './AddUserModal'
+// import Modal from '@material-ui/core/Modal';
+import { Alert } from 'react-st-modal';
 
 
+
+// function AlertExample() {
+//     return (
+//       <div>
+//         <button
+//           onClick={async () => {
+//             await Alert('Alert text', 'Alert title');
+//           }}
+//         >
+//             Alert
+//         </button>
+//       </div>
+//     );
+//   }
 
 class AddUserComponent extends React.Component {
 
@@ -33,12 +49,14 @@ class AddUserComponent extends React.Component {
     }
     //新增一個submit的function
     submitForm(event) {
-        console.log(this.state)
+        // console.log(this.state)
         UserService.AddUser(this.state).then((response) => {
-            alert("SUCCESS")
+            Alert('資料已新增', '確認');
         })
+        
         event.preventDefault()
     }
+
 
     render() {
         return (
@@ -88,8 +106,8 @@ class AddUserComponent extends React.Component {
                     <br /> */}
                     <label>區塊鏈ID</label>
                     <input
-                        id = "userAddress"
-                        name = "userAddress"
+                        id="userAddress"
+                        name="userAddress"
                         value={this.state.userAddress}
                         onChange={this.changeState}
                         required
@@ -99,8 +117,8 @@ class AddUserComponent extends React.Component {
                     <br />
                     <label>密碼</label>
                     <input
-                        id = "userPassword"
-                        name = "userPassword"
+                        id="userPassword"
+                        name="userPassword"
                         value={this.state.userPassword}
                         onChange={this.changeState}
                         required
@@ -126,31 +144,41 @@ class AddUserComponent extends React.Component {
                         name="status"
                         value="statusON"
                         onChange={this.changeState}
-                        // checked={this.status.statusON}
+                    // checked={this.status.statusON}
                     />
                     <label for="statusON">啟用</label>
-                    <input 
+                    <input
                         type="radio"
                         id="status"
                         name="status"
                         value="statusOFF"
                         onChange={this.changeState}
-                        // checked={this.status.statusOFF}
+                    // checked={this.status.statusOFF}
                     />
                     <label for="statusOFF">停用</label>
                     <br />
-                    <label>備註說明：</label>
+                    {/* <label>備註說明：</label>
                     <textarea id="remark" name="remark"
                         value={this.state.remark}
                         onChange={this.changeState}
                         placeholder="例如:使用者姓名，方便查閱"
                     />
-                    <br />
+                    <br /> */}
 
                     <input type="reset" value="清除" />
-                    <input type="submit" value="新增" />
-                </form>
 
+                    <input type="submit" value="新增" />
+
+                </form>
+                {/* <Modal
+                    open={true}
+                    // onClose={handleClose}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                >
+                   <div>love swag</div> 
+                </Modal> */}
+                
 
             </div>
         )
