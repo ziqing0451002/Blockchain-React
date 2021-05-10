@@ -67,6 +67,11 @@ class AddUserComponent extends React.Component {
         event.preventDefault()
     }
 
+    // componentDidMount() {
+    //     console.log(window.location)
+    //     window.alert(this.props.ID)
+    // }
+
 
     render() {
         const style = {
@@ -79,7 +84,7 @@ class AddUserComponent extends React.Component {
         return (
             <div style={{ height: 400, width: '100%' }}>
                 <h1 align="left">連線帳號新增</h1>
-
+                
                 <form onSubmit={this.submitForm}>
                     <label>服務名稱:
                     <select id="serviceName"
@@ -88,7 +93,7 @@ class AddUserComponent extends React.Component {
                             onChange={this.changeState}
                         >
                             <option value="書證上鏈">書證上鏈</option>
-                            <option value="其他功能">其他功能</option>
+                            <option value="其他功能" selected>其他功能</option>
                         </select>
                     </label>
 
@@ -193,7 +198,7 @@ class AddUserComponent extends React.Component {
                     />
                     <br /> */}
 
-                    <input type="reset" value="清除" />
+                    <input type="reset" onClick="Addtest()" value="清除" />
                     <input type="submit" value="新增" />
 
                 </form>

@@ -17,8 +17,15 @@ const columns = [
     { field: 'userAccount', headerName: '連線帳號ID', width: 150 },
     { field: 'userAddress', headerName: '區塊鏈ID', width: 300 },
     { field: 'status', headerName: '狀態', width: 110 },
-    { field: 'functionList', headerName: '功能', width: 100 },
-];
+    { field: 'functionList', headerName: '功能', width: 200, 
+    renderCell: (params) => 
+        <div>
+            <button><Link to="./AddUserController">編輯</Link></button>
+            <button><Link to="./AddUserController">檢視</Link></button>
+            <button><Link to="./AddUserController">刪除</Link></button>
+
+        </div>
+    }];
 
 class UserListComponent extends React.Component {
 
@@ -32,7 +39,7 @@ class UserListComponent extends React.Component {
     componentDidMount() {
         UserService.getUser().then((response) => {
             const data = response.data
-            const user = data.map((item, index) => ({ ...item, id: item.userAccount, number: index + 1 }))
+            const user = data.map((item, index) => ({ ...item, id: item.userAccount, number: index + 1}))
             this.setState({ user })
             console.log(this.state)
         })
@@ -43,7 +50,7 @@ class UserListComponent extends React.Component {
             <div style={{ height: 400, width: '100%' }}>
                 <h1 align="left">連線帳號管理</h1>
                 <h3 align="left">帳號清單</h3>
-                <Button><Link to="./AddUserController">+新增一筆</Link></Button>
+                <Button><Link to="./AddUserController?ID=addTest">+新增一筆</Link></Button>
                 <DataGrid rows={this.state.user || []} columns={columns} pageSize={20} />
             </div>
         )
