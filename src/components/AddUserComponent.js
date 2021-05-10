@@ -2,8 +2,15 @@ import React from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import UserService from '../service/UserService'
 // import AddUserModal from './AddUserModal'
-// import Modal from '@material-ui/core/Modal';
-import { Alert } from 'react-st-modal';
+import Modal from '@material-ui/core/Modal';
+// import { Alert } from 'react-st-modal';
+import AddUserModal from './AddUserModal';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
 
 
 
@@ -26,7 +33,7 @@ class AddUserComponent extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            serviceName: '書證上鏈',
+            serviceName: '',
             userAccount: 'BB001',
             agenciesName: '關貿網路',
             // userEmail: 'ziqing.liu@tradevan.com.tw',
@@ -34,7 +41,8 @@ class AddUserComponent extends React.Component {
             userPassword: '1234',
             // userName:'子慶',
             status: 'statusON',
-            remark: ''
+            remark: '',
+            modalOpen: false
         }
         //設定該function的this為class本身
         this.changeState = this.changeState.bind(this)
@@ -49,32 +57,51 @@ class AddUserComponent extends React.Component {
     }
     //新增一個submit的function
     submitForm(event) {
-        // console.log(this.state)
-        UserService.AddUser(this.state).then((response) => {
-            Alert('資料已新增', '確認');
-        })
-        
+        console.log(this.state)
+        // UserService.AddUser(this.state).then((response) => {
+        //     console.log("SUCCESS")
+        //     // Alert('資料已新增', '確認');
+        //     this.setState({ modalOpen: true });
+        // })
+
         event.preventDefault()
     }
 
 
     render() {
+        const style = {
+            backgroundColor: 'white',
+            font: 'inherit',
+            border: '1px solid blue',
+            padding: '8px',
+            cursor: 'pointer'
+        };
         return (
             <div style={{ height: 400, width: '100%' }}>
                 <h1 align="left">連線帳號新增</h1>
 
                 <form onSubmit={this.submitForm}>
-                    <label>服務名稱</label>
-                    <input
+                    <label>服務名稱:
+                    <select id="serviceName"
+                            name="serviceName"
+                            value={this.state.serviceName}
+                            onChange={this.changeState}
+                        >
+                            <option value="書證上鏈">書證上鏈</option>
+                            <option value="其他功能">其他功能</option>
+                        </select>
+                    </label>
+
+                    {/* <input
                         id="serviceName"
                         name="serviceName"
                         value={this.state.serviceName}
                         onChange={this.changeState}
                         required
                         placeholder="書證上鏈"
-                    />
+                    /> */}
                     <br />
-                    <label>連線帳號ID</label>
+                    <label>連線帳號ID: </label>
                     <input
                         id="userAccount"
                         name="userAccount"
@@ -84,7 +111,7 @@ class AddUserComponent extends React.Component {
                         placeholder="BB001"
                     />
                     <br />
-                    <label>機關名稱</label>
+                    <label>機關名稱： </label>
                     <input
                         id="agenciesName"
                         name="agenciesName"
@@ -104,7 +131,7 @@ class AddUserComponent extends React.Component {
                         placeholder="abcde@bbb.ccc.tw"
                     />
                     <br /> */}
-                    <label>區塊鏈ID</label>
+                    <label>區塊鏈ID: </label>
                     <input
                         id="userAddress"
                         name="userAddress"
@@ -115,7 +142,7 @@ class AddUserComponent extends React.Component {
                         placeholder="此為系統提供"
                     />
                     <br />
-                    <label>密碼</label>
+                    <label>密碼: </label>
                     <input
                         id="userPassword"
                         name="userPassword"
@@ -136,7 +163,7 @@ class AddUserComponent extends React.Component {
                         placeholder="Harry"
                     />
                     <br /> */}
-                    <label>狀態:</label>
+                    <label>狀態: </label>
                     <input
                         defaultChecked
                         type="radio"
@@ -147,6 +174,7 @@ class AddUserComponent extends React.Component {
                     // checked={this.status.statusON}
                     />
                     <label for="statusON">啟用</label>
+
                     <input
                         type="radio"
                         id="status"
@@ -166,23 +194,27 @@ class AddUserComponent extends React.Component {
                     <br /> */}
 
                     <input type="reset" value="清除" />
-
                     <input type="submit" value="新增" />
 
                 </form>
-                {/* <Modal
-                    open={true}
+                <Modal
+                    open={this.state.modalOpen}
                     // onClose={handleClose}
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
                 >
-                   <div>love swag</div> 
-                </Modal> */}
-                
+                    <div style={style}>
+                        <h2 id="simple-modal-title">資料已新增</h2>
+                        <button><Link to="./UserListController">確認</Link></button>
+                    </div>
+                </Modal>
+
+                {/* <AddUserModal></AddUserModal> */}
 
             </div>
         )
     }
 
 }
+
 export default AddUserComponent

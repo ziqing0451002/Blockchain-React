@@ -16,7 +16,7 @@ const columns = [
     { field: 'agenciesName', headerName: '機關名稱', width: 130 },
     { field: 'userAccount', headerName: '連線帳號ID', width: 150 },
     { field: 'userAddress', headerName: '區塊鏈ID', width: 300 },
-    { field: 'status', headerName: '狀態', width: 100 },
+    { field: 'status', headerName: '狀態', width: 110 },
     { field: 'functionList', headerName: '功能', width: 100 },
 ];
 
@@ -44,7 +44,7 @@ class UserListComponent extends React.Component {
                 <h1 align="left">連線帳號管理</h1>
                 <h3 align="left">帳號清單</h3>
                 <Button><Link to="./AddUserController">+新增一筆</Link></Button>
-                <DataGrid rows={this.state.user || []} columns={columns} pageSize={5} />
+                <DataGrid rows={this.state.user || []} columns={columns} pageSize={20} />
             </div>
         )
     }
