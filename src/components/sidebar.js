@@ -34,7 +34,7 @@ export default function Sidebar() {
   const blockChain = [
     {
         name: "連線帳號管理", 
-        path: '/UserListController',
+        path: '/UserLoginController',
          icon : <InboxIcon/>
     },
 

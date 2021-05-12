@@ -36,13 +36,16 @@ class AddUserComponent extends React.Component {
             serviceName: '',
             userAccount: 'BB001',
             agenciesName: '關貿網路',
-            // userEmail: 'ziqing.liu@tradevan.com.tw',
+            userEmail: 'ziqing.liu@tradevan.com.tw',
             userAddress: '',
             userPassword: '1234',
-            // userName:'子慶',
+            userName:'子慶',
             status: 'statusON',
             remark: '',
-            modalOpen: false
+            modalOpen: false,
+            mode: '',
+            uiDisable: false
+
         }
         //設定該function的this為class本身
         this.changeState = this.changeState.bind(this)
@@ -58,22 +61,42 @@ class AddUserComponent extends React.Component {
     //新增一個submit的function
     submitForm(event) {
         console.log(this.state)
-        // UserService.AddUser(this.state).then((response) => {
-        //     console.log("SUCCESS")
-        //     // Alert('資料已新增', '確認');
-        //     this.setState({ modalOpen: true });
-        // })
+        UserService.AddUser(this.state).then((response) => {
+            console.log("SUCCESS")
+            this.setState({ modalOpen: true });
+        })
+        
 
         event.preventDefault()
     }
 
-    // componentDidMount() {
-    //     console.log(window.location)
-    //     window.alert(this.props.ID)
-    // }
+    test(userAccount,userPassword){
+        //http://localhost:8000/api/account/deleteAccount/BB111?userPassword=1234
+        console.log("http://localhost:8000/api/account" + "/deleteAccount" + "/{userAccount}?" + "userPassword={userPassword}");
+    }
+
+    
+
+    getParameterByName(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    componentDidMount() {
+        var linkId = this.getParameterByName('ID');
+        this.setState({mode: linkId})
+        
+        this.test("AA001","1234")
+        
+    }
 
 
     render() {
+        console.log(this.state)
         const style = {
             backgroundColor: 'white',
             font: 'inherit',
@@ -82,29 +105,33 @@ class AddUserComponent extends React.Component {
             cursor: 'pointer'
         };
         return (
+            
             <div style={{ height: 400, width: '100%' }}>
-                <h1 align="left">連線帳號新增</h1>
+                <h1 align="left" hidden={this.state.mode==='addAccount'?false : true}>連線帳號新增</h1>
+                <h1 align="left" hidden={this.state.mode==='editAccount'?false : true}>連線帳號編輯</h1>
+                <h1 align="left" hidden={this.state.mode==='viewAccount'?false : true}>連線帳號檢視</h1>
                 
                 <form onSubmit={this.submitForm}>
                     <label>服務名稱:
-                    <select id="serviceName"
+                    {/* <select id="serviceName"
                             name="serviceName"
                             value={this.state.serviceName}
                             onChange={this.changeState}
                         >
                             <option value="書證上鏈">書證上鏈</option>
                             <option value="其他功能" selected>其他功能</option>
-                        </select>
+                        </select> */}
                     </label>
 
-                    {/* <input
+                    <input
                         id="serviceName"
                         name="serviceName"
                         value={this.state.serviceName}
                         onChange={this.changeState}
                         required
                         placeholder="書證上鏈"
-                    /> */}
+                        disabled={this.state.mode==='viewAccount'?true : false}
+                    />
                     <br />
                     <label>連線帳號ID: </label>
                     <input
@@ -114,6 +141,7 @@ class AddUserComponent extends React.Component {
                         onChange={this.changeState}
                         required
                         placeholder="BB001"
+                        disabled={this.state.mode==='editAccount'||this.state.mode==='viewAccount'?true : false}
                     />
                     <br />
                     <label>機關名稱： </label>
@@ -124,9 +152,10 @@ class AddUserComponent extends React.Component {
                         onChange={this.changeState}
                         required
                         placeholder="資訊中心"
+                        disabled={this.state.mode==='viewAccount'?true : false}
                     />
                     <br />
-                    {/* <label>電子信箱</label>
+                    <label>電子信箱</label>
                     <input
                         id = "userEmail"
                         name = "userEmail"
@@ -134,8 +163,9 @@ class AddUserComponent extends React.Component {
                         onChange={this.changeState}
                         required
                         placeholder="abcde@bbb.ccc.tw"
+                        disabled={this.state.mode==='viewAccount'?true : false}
                     />
-                    <br /> */}
+                    <br />
                     <label>區塊鏈ID: </label>
                     <input
                         id="userAddress"
@@ -156,9 +186,10 @@ class AddUserComponent extends React.Component {
                         required
                         type="password"
                         placeholder="********"
+                        disabled={this.state.mode==='viewAccount'?true : false}
                     />
                     <br />
-                    {/* <label>管理者</label>
+                    <label>管理者</label>
                     <input
                         id = "userName"
                         name = "userName"
@@ -166,8 +197,9 @@ class AddUserComponent extends React.Component {
                         onChange={this.changeState}
                         required
                         placeholder="Harry"
+                        disabled={this.state.mode==='viewAccount'?true : false}
                     />
-                    <br /> */}
+                    <br />
                     <label>狀態: </label>
                     <input
                         defaultChecked
@@ -176,6 +208,7 @@ class AddUserComponent extends React.Component {
                         name="status"
                         value="statusON"
                         onChange={this.changeState}
+                        disabled={this.state.mode==='viewAccount'?true : false}
                     // checked={this.status.statusON}
                     />
                     <label for="statusON">啟用</label>
@@ -186,20 +219,23 @@ class AddUserComponent extends React.Component {
                         name="status"
                         value="statusOFF"
                         onChange={this.changeState}
+                        disabled={this.state.mode==='viewAccount'?true : false}
                     // checked={this.status.statusOFF}
                     />
                     <label for="statusOFF">停用</label>
                     <br />
-                    {/* <label>備註說明：</label>
+                    <label>備註說明：</label>
                     <textarea id="remark" name="remark"
                         value={this.state.remark}
                         onChange={this.changeState}
                         placeholder="例如:使用者姓名，方便查閱"
+                        disabled={this.state.mode==='viewAccount'?true : false}
                     />
-                    <br /> */}
+                    <br />
 
-                    <input type="reset" onClick="Addtest()" value="清除" />
-                    <input type="submit" value="新增" />
+                    <input type="reset"  value="清除" hidden={this.state.mode==='viewAccount'?true : false}/>
+                    <input type="submit" value="新增" hidden={this.state.mode==='addAccount'?false : true}/>
+                    <input type="submit" value="儲存" hidden={this.state.mode==='editAccount'?false : true}/>
 
                 </form>
                 <Modal
