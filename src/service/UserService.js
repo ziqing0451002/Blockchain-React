@@ -23,8 +23,8 @@ class UserService{
 
     deleteUser(userAccount,userPassword){
         //http://localhost:8000/api/account/deleteAccount/BB111?userPassword=1234
-        return axios.post(USERINFO_REST_API_URL + "/deleteAccount" + "/${userAccount}?" + "userPassword=${userPassword}");
-        // return axios.post(USERINFO_REST_API_URL + "/deleteAccount/" + userAccount + "?userPassword=" + userPassword);
+        // return axios.post(USERINFO_REST_API_URL + "/deleteAccount" + "/${userAccount}?" + "userPassword=${userPassword}");
+        return axios.delete(USERINFO_REST_API_URL + "/deleteAccount/" + userAccount + "?userPassword=" + userPassword);
     }
 }
 

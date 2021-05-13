@@ -20,7 +20,9 @@ class UserListComponent extends React.Component {
         super(props)
         this.state = {
             user: [],
-            modalOpen: false
+            modalOpen: false,
+            selectedUser: '',
+            userPasswordCommit: ''
         }
     }
 
@@ -50,16 +52,49 @@ class UserListComponent extends React.Component {
         })
     }
 
-    deleteClick = () =>{
+    handleChange = (e) => {
+        this.setState({
+            [e.target.id]: e.target.value
+        })
+    }
+
+    setSelection = (rowData) => {
+        this.setState({ selectedUser: rowData.id })
+        console.log(rowData)
+        console.log(this.state.selectedUser)
+
+    }
+
+    deleteClick = () => {
+        console.log("按到我了啦")
         this.setState({ modalOpen: true });
+        // this.setState({ selectedUser: this.state.user[this.state.index]})
         // UserService.deleteUser(this.state).then((response) => {
         //     console.log("SUCCESS")
         // })
     }
-    deleteUser = () =>{
-        UserService.deleteUser(this.state).then((response) => {
-            console.log("SUCCESS")
+    deleteUser = () => {
+        console.log(this.state.selectedUser)
+        console.log(this.state.userPasswordCommit)
+        UserService.deleteUser(this.state.selectedUser, this.state.userPasswordCommit).then((response) => {
+            console.log(response);
+            if (response.data === 1) {
+                // () => window.alert("SUCCESS")
+                console.log("SUCCESS");
+                
+            } else {
+                console.log(response.data);
+            }
+            this.setState({ modalOpen: false });
+        }
+        ).catch((err) => {
+            console.log(err);
+            this.setState({ modalOpen: false });
+            // this.setState({ redirect: false })
         })
+    }
+    deleteCancel = () => {
+        this.setState({ modalOpen: false });
     }
 
     render() {
@@ -75,7 +110,7 @@ class UserListComponent extends React.Component {
                 <h1 align="left">連線帳號管理</h1>
                 <h3 align="left">帳號清單</h3>
                 <Button><Link to="./AddUserController?ID=addAccount">+新增一筆</Link></Button>
-                <DataGrid rows={this.state.user || []} columns={this.columns} pageSize={20} />
+                <DataGrid rows={this.state.user || []} columns={this.columns} pageSize={20} onRowClick={(rowData) => this.setSelection(rowData)} />
 
                 <Modal
                     open={this.state.modalOpen}
@@ -86,8 +121,16 @@ class UserListComponent extends React.Component {
                     <div style={style}>
                         <h2 id="simple-modal-title">確定刪除資料</h2>
                         <h5 >刪除資料後無法復原</h5>
+                        <label>密碼確認：</label>
+                        <input
+                            type="password"
+                            id="userPasswordCommit"
+                            onChange={(e) => this.handleChange(e)}
+                            value={this.state.userPasswordCommit}
+                        />
+                        <br />
                         <button onClick={this.deleteUser}>確認</button>
-                        <button>取消</button>
+                        <button onClick={this.deleteCancel}> 取消</button>
                     </div>
                 </Modal>
             </div>

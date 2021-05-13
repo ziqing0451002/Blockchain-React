@@ -7,6 +7,7 @@ import {
     Link
 } from "react-router-dom";
 import { Redirect } from 'react-router';
+import { ContactsOutlined } from '@material-ui/icons';
 
 
 
@@ -43,14 +44,20 @@ class UserLoginComponent extends React.Component {
     }
 
     userLogin = () => {
-        UserService.userLogin(this.state.userAccount, this.state.userPassword).then(
-            // () => window.alert("SUCCESS")
-            console.log("SUCCESS"),
-            this.setState({ redirect: true })
-        ).catch(
-            console.log("FAIL"),
+        UserService.userLogin(this.state.userAccount, this.state.userPassword).then((response) => {
+            console.log(response);
+            if (response.data === true) {
+                // () => window.alert("SUCCESS")
+                console.log("SUCCESS");
+                this.setState({ redirect: true })
+            }else{
+                console.log(response.data);
+            }
+        }
+        ).catch((err) => {
+            console.log(err);
             // this.setState({ redirect: false })
-        )
+        })
     }
     createAccount = () => {
         window.alert("跳轉建立帳號畫面")
@@ -61,11 +68,14 @@ class UserLoginComponent extends React.Component {
 
 
     render() {
+        console.log(this.state.redirect)
         if (this.state.redirect) {
             return <Redirect push to="/UserListController" />;
         }
         return (
             <div>
+                <h1>連線帳號登入</h1>
+
                 <label>帳號：</label>
                 <input
                     id="userAccount"
