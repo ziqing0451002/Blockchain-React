@@ -1,5 +1,6 @@
 import React from 'react';
 import UserService from '../service/UserService'
+import UserListComponent from '../components/UserListComponent'
 import {
     BrowserRouter as Router,
     Switch,
@@ -46,16 +47,20 @@ class UserLoginComponent extends React.Component {
     userLogin = () => {
         UserService.userLogin(this.state.userAccount, this.state.userPassword).then((response) => {
             console.log(response);
+            console.log(response.data);
+
             if (response.data === true) {
                 // () => window.alert("SUCCESS")
                 console.log("SUCCESS");
                 this.setState({ redirect: true })
-            }else{
+            }else{  
                 console.log(response.data);
             }
         }
         ).catch((err) => {
             console.log(err);
+            window.alert("密碼或密碼錯誤")
+
             // this.setState({ redirect: false })
         })
     }
@@ -68,10 +73,16 @@ class UserLoginComponent extends React.Component {
 
 
     render() {
-        console.log(this.state.redirect)
+        // console.log(this.state.redirect)
         if (this.state.redirect) {
-            return <Redirect push to="/UserListController" />;
-        }
+            var path = {
+                pathname:'/UserListController',
+                state:this.state.userAccount
+            }
+              return <Redirect push to={'/UserListController'} />;
+            //   return <Redirect push to={'/UserListController/'}/>;
+            // return <Link to='/UserListController' component={UserListComponent} />;
+            }
         return (
             <div>
                 <h1>連線帳號登入</h1>

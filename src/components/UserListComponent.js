@@ -36,19 +36,26 @@ class UserListComponent extends React.Component {
         {
             field: 'functionList', headerName: '功能', width: 200,
             renderCell: (params) =>
+            // console.log(params)
+                // console.log(params.row.userAccount)
                 <div>
-                    <button><Link to="./AddUserController?ID=editAccount">編輯</Link></button>
-                    <button><Link to="./AddUserController?ID=viewAccount">檢視</Link></button>
+                    <button><Link to={`./AddUserController?mode=editAccount&userID=${params.row.userAccount}`}>編輯</Link></button>
+                    <button><Link to={`./AddUserController?mode=viewAccount&userID=${params.row.userAccount}`}>檢視</Link></button>
+                    {/* <button><Link to={{
+                        pathname:'./AddUserController?ID=viewAccount',
+                        test: this.state.selectedUser
+                    }}>檢視</Link></button> */}
                     <button onClick={this.deleteClick}>刪除</button>
+                    
                 </div>
         }];
 
     componentDidMount() {
-        UserService.getUser().then((response) => {
+        UserService.getUserList().then((response) => {
             const data = response.data
             const user = data.map((item, index) => ({ ...item, id: item.userAccount, number: index + 1 }))
             this.setState({ user })
-            console.log(this.state)
+            // console.log(this.state)
         })
     }
 
@@ -59,14 +66,18 @@ class UserListComponent extends React.Component {
     }
 
     setSelection = (rowData) => {
-        this.setState({ selectedUser: rowData.id })
-        console.log(rowData)
-        console.log(this.state.selectedUser)
+        try{
+            this.setState({ selectedUser: rowData.id })
+            console.log(rowData)
+        }catch(e){
+            console.log(e)
+        }
+        
+        // console.log(this.state.selectedUser)
 
     }
 
     deleteClick = () => {
-        console.log("按到我了啦")
         this.setState({ modalOpen: true });
         // this.setState({ selectedUser: this.state.user[this.state.index]})
         // UserService.deleteUser(this.state).then((response) => {
@@ -74,20 +85,22 @@ class UserListComponent extends React.Component {
         // })
     }
     deleteUser = () => {
-        console.log(this.state.selectedUser)
-        console.log(this.state.userPasswordCommit)
+        // console.log(this.state.selectedUser)
+        // console.log(this.state.userPasswordCommit)
         UserService.deleteUser(this.state.selectedUser, this.state.userPasswordCommit).then((response) => {
-            console.log(response);
+            // console.log(response);
             if (response.data === 1) {
                 // () => window.alert("SUCCESS")
                 console.log("SUCCESS");
                 
             } else {
+                // () => window.alert("密碼錯誤")
                 console.log(response.data);
             }
             this.setState({ modalOpen: false });
         }
         ).catch((err) => {
+            window.alert("密碼錯誤")
             console.log(err);
             this.setState({ modalOpen: false });
             // this.setState({ redirect: false })
@@ -98,6 +111,8 @@ class UserListComponent extends React.Component {
     }
 
     render() {
+        
+        console.log(this.state.selectedUser)
         const style = {
             backgroundColor: 'white',
             font: 'inherit',
@@ -109,7 +124,7 @@ class UserListComponent extends React.Component {
             <div style={{ height: 400, width: '100%' }}>
                 <h1 align="left">連線帳號管理</h1>
                 <h3 align="left">帳號清單</h3>
-                <Button><Link to="./AddUserController?ID=addAccount">+新增一筆</Link></Button>
+                <Button><Link to="./AddUserController?mode=addAccount">+新增一筆</Link></Button>
                 <DataGrid rows={this.state.user || []} columns={this.columns} pageSize={20} onRowClick={(rowData) => this.setSelection(rowData)} />
 
                 <Modal
