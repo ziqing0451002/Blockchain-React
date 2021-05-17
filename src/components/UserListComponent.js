@@ -10,6 +10,7 @@ import { DataGrid } from '@material-ui/data-grid';
 import UserService from '../service/UserService'
 import { Button } from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
+import { ContactsOutlined } from '@material-ui/icons';
 
 
 
@@ -32,11 +33,11 @@ class UserListComponent extends React.Component {
         { field: 'agenciesName', headerName: '機關名稱', width: 130 },
         { field: 'userAccount', headerName: '連線帳號ID', width: 150 },
         { field: 'userAddress', headerName: '區塊鏈ID', width: 300 },
-        { field: 'status', headerName: '狀態', width: 110 },
+        { field: 'status', headerName: '狀態', width: 120 },
         {
             field: 'functionList', headerName: '功能', width: 200,
             renderCell: (params) =>
-            // console.log(params)
+                // console.log(params)
                 // console.log(params.row.userAccount)
                 <div>
                     <button><Link to={`./AddUserController?mode=editAccount&userID=${params.row.userAccount}`}>編輯</Link></button>
@@ -46,7 +47,7 @@ class UserListComponent extends React.Component {
                         test: this.state.selectedUser
                     }}>檢視</Link></button> */}
                     <button onClick={this.deleteClick}>刪除</button>
-                    
+
                 </div>
         }];
 
@@ -54,6 +55,7 @@ class UserListComponent extends React.Component {
         UserService.getUserList().then((response) => {
             const data = response.data
             const user = data.map((item, index) => ({ ...item, id: item.userAccount, number: index + 1 }))
+
             this.setState({ user })
             // console.log(this.state)
         })
@@ -66,13 +68,13 @@ class UserListComponent extends React.Component {
     }
 
     setSelection = (rowData) => {
-        try{
+        try {
             this.setState({ selectedUser: rowData.id })
             console.log(rowData)
-        }catch(e){
+        } catch (e) {
             console.log(e)
         }
-        
+
         // console.log(this.state.selectedUser)
 
     }
@@ -92,12 +94,13 @@ class UserListComponent extends React.Component {
             if (response.data === 1) {
                 // () => window.alert("SUCCESS")
                 console.log("SUCCESS");
-                
+
             } else {
                 // () => window.alert("密碼錯誤")
                 console.log(response.data);
             }
             this.setState({ modalOpen: false });
+            window.location.reload();
         }
         ).catch((err) => {
             window.alert("密碼錯誤")
@@ -111,7 +114,7 @@ class UserListComponent extends React.Component {
     }
 
     render() {
-        
+
         console.log(this.state.selectedUser)
         const style = {
             backgroundColor: 'white',
@@ -125,7 +128,17 @@ class UserListComponent extends React.Component {
                 <h1 align="left">連線帳號管理</h1>
                 <h3 align="left">帳號清單</h3>
                 <Button><Link to="./AddUserController?mode=addAccount">+新增一筆</Link></Button>
-                <DataGrid rows={this.state.user || []} columns={this.columns} pageSize={20} onRowClick={(rowData) => this.setSelection(rowData)} />
+                <DataGrid rows={this.state.user || []}
+                    columns={this.columns}
+                    pageSize={20}
+                    onRowClick={(rowData) => this.setSelection(rowData)}
+                    // sortModel={[
+                    //     {
+                    //         field: 'createdTime',
+                    //         sort: 'asc',
+                    //     },
+                    // ]}
+                />
 
                 <Modal
                     open={this.state.modalOpen}

@@ -224,6 +224,7 @@ class AddUserComponent extends React.Component {
                         type="password"
                         placeholder="********"
                         disabled={this.state.mode === 'editAccount' || this.state.mode === 'viewAccount' ? true : false}
+                        // disabled={this.state.mode === 'viewAccount' ? true : false}
                     />
                     <br />
                     <label>管理者</label>

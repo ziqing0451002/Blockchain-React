@@ -102,7 +102,7 @@ class UserLoginComponent extends React.Component {
                 />
                 <br />
                 <button onClick={this.userLogin}>確認</button>
-                <button onClick={this.createAccount}>建立帳號</button>
+                {/* <button onClick={this.createAccount}>建立帳號</button> */}
                 {/* <button onClick={this.forgetPassword}>忘記密碼</button> */}
 
             </div>
