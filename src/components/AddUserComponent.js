@@ -33,6 +33,7 @@ class AddUserComponent extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            //個人資訊
             serviceName: '',
             userAccount: '',
             agenciesName: '',
@@ -42,6 +43,11 @@ class AddUserComponent extends React.Component {
             userName: '',
             status: 'statusON', //預設為ON
             remark: '',
+            //修改密碼
+            userOriginPassword: '',
+            userNewPassword: '',
+            userConfirmNewPassword: '',
+            //其他控制項
             modalOpen: false,
             mode: '',
             uiDisable: false
@@ -68,18 +74,50 @@ class AddUserComponent extends React.Component {
                 this.setState({ modalOpen: true });
             })
         } else if (this.state.mode === "editAccount") {
-            UserService.editUser(
-                this.state.userAccount,
-                this.state.userName,
-                this.state.userEmail,
-                this.state.serviceName,
-                this.state.agenciesName,
-                this.state.status,
-                this.state.remark
-            ).then((response) => {
-                console.log("SUCCESS")
-                this.setState({ modalOpen: true });
-            })
+            if (this.state.userOriginPassword != '' && this.state.userNewPassword != '' && this.state.userConfirmNewPassword != '' ) {
+                if (this.state.userNewPassword != this.state.userConfirmNewPassword){
+                    window.alert("密碼與確認密碼不一致")
+                }else{
+                    UserService.editUserPassword(
+                        this.state.userAccount,
+                        this.state.userOriginPassword,
+                        this.state.userNewPassword
+                    ).then((response) => {
+                        console.log("editUserPassword_SUCCESS")
+                        UserService.editUserInfo(
+                            this.state.userAccount,
+                            this.state.userName,
+                            this.state.userEmail,
+                            this.state.serviceName,
+                            this.state.agenciesName,
+                            this.state.status,
+                            this.state.remark
+                        ).then((response) => {
+                            console.log("editUserInfo_SUCCESS")
+                            this.setState({ modalOpen: true });
+                        }).catch((err) => {
+                            console.log(err);
+                            window.alert("修改失敗:" + err)            
+                        })
+                    }).catch((err) => {
+                        console.log(err);
+                        window.alert("密碼錯誤或不符合規範:" + err)            
+                    })
+                }
+            }else{
+                UserService.editUserInfo(
+                    this.state.userAccount,
+                    this.state.userName,
+                    this.state.userEmail,
+                    this.state.serviceName,
+                    this.state.agenciesName,
+                    this.state.status,
+                    this.state.remark
+                ).then((response) => {
+                    console.log("SUCCESS")
+                    this.setState({ modalOpen: true });
+                })
+            }
         }
 
 
@@ -133,7 +171,7 @@ class AddUserComponent extends React.Component {
 
 
     render() {
-        console.log(this.state)
+        // console.log(this.state)
         const style = {
             backgroundColor: 'white',
             font: 'inherit',
@@ -214,19 +252,21 @@ class AddUserComponent extends React.Component {
                         placeholder="此為系統提供"
                     />
                     <br />
-                    <label>密碼: </label>
-                    <input
-                        id="userPassword"
-                        name="userPassword"
-                        value={this.state.userPassword}
-                        onChange={this.changeState}
-                        required
-                        type="password"
-                        placeholder="********"
-                        disabled={this.state.mode === 'editAccount' || this.state.mode === 'viewAccount' ? true : false}
-                        // disabled={this.state.mode === 'viewAccount' ? true : false}
-                    />
-                    <br />
+                    <div hidden={this.state.mode === 'editAccount' ? true : false}>
+                        <label >密碼: </label>
+                        <input
+                            id="userPassword"
+                            name="userPassword"
+                            value={this.state.userPassword}
+                            onChange={this.changeState}
+                            required
+                            type="password"
+                            placeholder="********"
+                            disabled={this.state.mode === 'viewAccount' ? true : false}
+                        // hidden={this.state.mode === 'editAccount' ? true : false}
+                        />
+                        <br />
+                    </div>
                     <label>管理者</label>
                     <input
                         id="userName"
@@ -271,6 +311,50 @@ class AddUserComponent extends React.Component {
                         disabled={this.state.mode === 'viewAccount' ? true : false}
                     />
                     <br />
+                    <div hidden={this.state.mode === 'editAccount' ? false : true}>
+                        <h1 align="left" >密碼修改</h1>
+                        <h5 >(如不修改登入密碼，則不需填寫以下欄位)</h5>
+                        <label >舊密碼: </label>
+                        <input
+                            id="userOriginPassword"
+                            name="userOriginPassword"
+                            onChange={this.changeState}
+                            required={this.state.userOriginPassword != '' ||
+                                this.state.userNewPassword != '' ||
+                                this.state.userConfirmNewPassword != '' ? true : false}
+                            type="password"
+                            placeholder="請輸入原登入密碼"
+                        // hidden={this.state.mode === 'editAccount' ? true : false}
+                        />
+                        <br />
+                        <label >新密碼: </label>
+                        <input
+                            id="userNewPassword"
+                            name="userNewPassword"
+                            onChange={this.changeState}
+                            required={this.state.userOriginPassword != '' ||
+                                this.state.userNewPassword != '' ||
+                                this.state.userConfirmNewPassword != '' ? true : false}
+                            type="password"
+                            placeholder="請輸入新密碼"
+                        // hidden={this.state.mode === 'editAccount' ? true : false}
+                        />
+                        <br />
+                        <label >確認密碼: </label>
+                        <input
+                            id="userConfirmNewPassword"
+                            name="userConfirmNewPassword"
+                            onChange={this.changeState}
+                            required={this.state.userOriginPassword != '' ||
+                                this.state.userNewPassword != '' ||
+                                this.state.userConfirmNewPassword != '' ? true : false}
+                            type="password"
+                            placeholder="請輸入確認密碼"
+                        // hidden={this.state.mode === 'editAccount' ? true : false}
+                        />
+                        <br />
+                    </div>
+
 
                     <input type="reset" value="清除" hidden={this.state.mode === 'viewAccount' ? true : false} />
                     <input type="submit" value="新增" hidden={this.state.mode === 'addAccount' ? false : true} />
