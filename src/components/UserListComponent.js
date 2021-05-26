@@ -30,18 +30,18 @@ class UserListComponent extends React.Component {
     columns = [
         { field: 'number', headerName: '序號', width: 100 },
         { field: 'serviceName', headerName: '服務名稱', width: 130 },
-        { field: 'agenciesName', headerName: '機關名稱', width: 130 },
-        { field: 'userAccount', headerName: '連線帳號ID', width: 150 },
-        { field: 'userAddress', headerName: '區塊鏈ID', width: 300 },
+        { field: 'orgName', headerName: '機關名稱', width: 130 },
+        { field: 'connectAccount', headerName: '連線帳號ID', width: 150 },
+        { field: 'walletAddress', headerName: '區塊鏈ID', width: 300 },
         { field: 'status', headerName: '狀態', width: 120 },
         {
             field: 'functionList', headerName: '功能', width: 200,
             renderCell: (params) =>
                 // console.log(params)
-                // console.log(params.row.userAccount)
+                // console.log(params.row.connectAccount)
                 <div>
-                    <button><Link to={`./AddUserController?mode=editAccount&userID=${params.row.userAccount}`}>編輯</Link></button>
-                    <button><Link to={`./AddUserController?mode=viewAccount&userID=${params.row.userAccount}`}>檢視</Link></button>
+                    <button><Link to={`./AddUserController?mode=editAccount&userID=${params.row.connectAccount}`}>編輯</Link></button>
+                    <button><Link to={`./AddUserController?mode=viewAccount&userID=${params.row.connectAccount}`}>檢視</Link></button>
                     {/* <button><Link to={{
                         pathname:'./AddUserController?ID=viewAccount',
                         test: this.state.selectedUser
@@ -54,7 +54,7 @@ class UserListComponent extends React.Component {
     componentDidMount() {
         UserService.getUserList().then((response) => {
             const data = response.data
-            const user = data.map((item, index) => ({ ...item, id: item.userAccount, number: index + 1 }))
+            const user = data.map((item, index) => ({ ...item, id: item.connectAccount, number: index + 1 }))
 
             this.setState({ user })
             // console.log(this.state)

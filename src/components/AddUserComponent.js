@@ -35,13 +35,13 @@ class AddUserComponent extends React.Component {
         this.state = {
             //個人資訊
             serviceName: '',
-            userAccount: '',
-            agenciesName: '',
-            userEmail: '',
-            userAddress: '',
-            userPassword: '',
-            userName: '',
-            status: 'statusON', //預設為ON
+            connectAccount: '',
+            orgName: '',
+            managerEmail: '',
+            walletAddress: '',
+            connectPassword: '',
+            managerName: '',
+            status: true, //預設為ON
             remark: '',
             //修改密碼
             userOriginPassword: '',
@@ -79,17 +79,17 @@ class AddUserComponent extends React.Component {
                     window.alert("密碼與確認密碼不一致")
                 }else{
                     UserService.editUserPassword(
-                        this.state.userAccount,
+                        this.state.connectAccount,
                         this.state.userOriginPassword,
                         this.state.userNewPassword
                     ).then((response) => {
-                        console.log("editUserPassword_SUCCESS")
+                        console.log("editUserPassword")
                         UserService.editUserInfo(
-                            this.state.userAccount,
-                            this.state.userName,
-                            this.state.userEmail,
+                            this.state.connectAccount,
+                            this.state.managerName,
+                            this.state.managerEmail,
                             this.state.serviceName,
-                            this.state.agenciesName,
+                            this.state.orgName,
                             this.state.status,
                             this.state.remark
                         ).then((response) => {
@@ -106,11 +106,11 @@ class AddUserComponent extends React.Component {
                 }
             }else{
                 UserService.editUserInfo(
-                    this.state.userAccount,
-                    this.state.userName,
-                    this.state.userEmail,
+                    this.state.connectAccount,
+                    this.state.managerName,
+                    this.state.managerEmail,
                     this.state.serviceName,
-                    this.state.agenciesName,
+                    this.state.orgName,
                     this.state.status,
                     this.state.remark
                 ).then((response) => {
@@ -125,9 +125,9 @@ class AddUserComponent extends React.Component {
         event.preventDefault()
     }
 
-    // test(userAccount,userPassword){
-    //     //http://localhost:8000/api/account/deleteAccount/BB111?userPassword=1234
-    //     console.log("http://localhost:8000/api/account" + "/deleteAccount" + "/{userAccount}?" + "userPassword={userPassword}");
+    // test(connectAccount,connectPassword){
+    //     //http://localhost:8000/api/account/deleteAccount/BB111?connectPassword=1234
+    //     console.log("http://localhost:8000/api/account" + "/deleteAccount" + "/{connectAccount}?" + "connectPassword={connectPassword}");
     // }
 
 
@@ -145,7 +145,7 @@ class AddUserComponent extends React.Component {
         var linkMode = this.getParameterByName('mode');
         var linkUserId = this.getParameterByName('userID');
         this.setState({ mode: linkMode })
-        this.setState({ userAccount: linkUserId })
+        this.setState({ connectAccount: linkUserId })
         // this.test("AA001","1234")
         if (linkMode === "editAccount" || linkMode === "viewAccount") {
             this.getUserInfo(linkUserId)
@@ -157,12 +157,12 @@ class AddUserComponent extends React.Component {
         UserService.getUserInfo(userID).then((response) => {
             const data = response.data
             this.setState({ serviceName: data.serviceName })
-            this.setState({ userAccount: data.userAccount })
-            this.setState({ agenciesName: data.agenciesName })
-            this.setState({ userEmail: data.userEmail })
-            this.setState({ userAddress: data.userAddress })
-            this.setState({ userPassword: data.userPassword })
-            this.setState({ userName: data.userName })
+            this.setState({ connectAccount: data.connectAccount })
+            this.setState({ orgName: data.orgName })
+            this.setState({ managerEmail: data.managerEmail })
+            this.setState({ walletAddress: data.walletAddress })
+            this.setState({ connectPassword: data.connectPassword })
+            this.setState({ managerName: data.managerName })
             this.setState({ status: data.status })
             this.setState({ remark: data.remark })
 
@@ -171,7 +171,12 @@ class AddUserComponent extends React.Component {
 
 
     render() {
-        // console.log(this.state)
+        if (this.state.status === "true") {
+            this.setState({ status:true})
+        }else if (this.state.status === "false") {
+            this.setState({ status:false})
+        }
+        console.log(this.state)
         const style = {
             backgroundColor: 'white',
             font: 'inherit',
@@ -210,9 +215,9 @@ class AddUserComponent extends React.Component {
                     <br />
                     <label>連線帳號ID: </label>
                     <input
-                        id="userAccount"
-                        name="userAccount"
-                        value={this.state.userAccount}
+                        id="connectAccount"
+                        name="connectAccount"
+                        value={this.state.connectAccount}
                         onChange={this.changeState}
                         required
                         placeholder="BB001"
@@ -221,9 +226,9 @@ class AddUserComponent extends React.Component {
                     <br />
                     <label>機關名稱： </label>
                     <input
-                        id="agenciesName"
-                        name="agenciesName"
-                        value={this.state.agenciesName}
+                        id="orgName"
+                        name="orgName"
+                        value={this.state.orgName}
                         onChange={this.changeState}
                         required
                         placeholder="資訊中心"
@@ -232,9 +237,9 @@ class AddUserComponent extends React.Component {
                     <br />
                     <label>電子信箱</label>
                     <input
-                        id="userEmail"
-                        name="userEmail"
-                        value={this.state.userEmail}
+                        id="managerEmail"
+                        name="managerEmail"
+                        value={this.state.managerEmail}
                         onChange={this.changeState}
                         required
                         placeholder="abcde@bbb.ccc.tw"
@@ -243,9 +248,9 @@ class AddUserComponent extends React.Component {
                     <br />
                     <label>區塊鏈ID: </label>
                     <input
-                        id="userAddress"
-                        name="userAddress"
-                        value={this.state.userAddress}
+                        id="walletAddress"
+                        name="walletAddress"
+                        value={this.state.walletAddress}
                         onChange={this.changeState}
                         required
                         disabled
@@ -255,9 +260,9 @@ class AddUserComponent extends React.Component {
                     <div hidden={this.state.mode === 'editAccount' ? true : false}>
                         <label >密碼: </label>
                         <input
-                            id="userPassword"
-                            name="userPassword"
-                            value={this.state.userPassword}
+                            id="connectPassword"
+                            name="connectPassword"
+                            value={this.state.connectPassword}
                             onChange={this.changeState}
                             required
                             type="password"
@@ -269,9 +274,9 @@ class AddUserComponent extends React.Component {
                     </div>
                     <label>管理者</label>
                     <input
-                        id="userName"
-                        name="userName"
-                        value={this.state.userName}
+                        id="managerName"
+                        name="managerName"
+                        value={this.state.managerName}
                         onChange={this.changeState}
                         required
                         placeholder="Harry"
@@ -280,28 +285,28 @@ class AddUserComponent extends React.Component {
                     <br />
                     <label>狀態: </label>
                     <input
-                        checked={this.state.status === 'statusON' ? true : false}
+                        checked={this.state.status === true ? true : false}
                         type="radio"
                         id="status"
                         name="status"
-                        value="statusON"
+                        value= {true}
                         onChange={this.changeState}
                         disabled={this.state.mode === 'viewAccount' ? true : false}
                     // checked={this.status.statusON}
                     />
-                    <label for="statusON">啟用</label>
+                    <label for={this.state.status}>啟用</label>
 
                     <input
-                        checked={this.state.status === 'statusOFF' ? true : false}
+                        checked={this.state.status === false ? true : false}
                         type="radio"
                         id="status"
                         name="status"
-                        value="statusOFF"
+                        value= {false}
                         onChange={this.changeState}
                         disabled={this.state.mode === 'viewAccount' ? true : false}
                     // checked={this.status.statusOFF}
                     />
-                    <label for="statusOFF">停用</label>
+                    <label for={this.state.status}>停用</label>
                     <br />
                     <label>備註說明：</label>
                     <textarea id="remark" name="remark"
