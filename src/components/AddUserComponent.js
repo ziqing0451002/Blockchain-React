@@ -72,6 +72,9 @@ class AddUserComponent extends React.Component {
             UserService.AddUser(this.state).then((response) => {
                 console.log("SUCCESS")
                 this.setState({ modalOpen: true });
+            }).catch((err) => {
+                console.log(err);
+                window.alert("新增失敗:" + err)            
             })
         } else if (this.state.mode === "editAccount") {
             if (this.state.userOriginPassword != '' && this.state.userNewPassword != '' && this.state.userConfirmNewPassword != '' ) {

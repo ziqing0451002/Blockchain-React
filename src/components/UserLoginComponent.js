@@ -17,8 +17,8 @@ class UserLoginComponent extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            userAccount: "",
-            userPassword: "",
+            username: "",
+            password: "",
             redirect: false
         }
         // this.login = this.login.bind(this);
@@ -31,13 +31,13 @@ class UserLoginComponent extends React.Component {
         })
 
         // console.log(e.target.id)
-        // if (e.target.id === "userAccount"){
+        // if (e.target.id === "username"){
         //     this.setState({
-        //         userAccount: e.target.value
+        //         username: e.target.value
         //     })
-        // }else if(e.target.id === "userPassword"){
+        // }else if(e.target.id === "password"){
         //     this.setState({
-        //         userPassword: e.target.value
+        //         password: e.target.value
         //     })
         // }
 
@@ -45,21 +45,19 @@ class UserLoginComponent extends React.Component {
     }
 
     userLogin = () => {
-        UserService.userLogin(this.state.userAccount, this.state.userPassword).then((response) => {
+        UserService.userLogin(this.state).then((response) => {
             console.log(response);
             console.log(response.data);
-
-            if (response.data === true) {
-                // () => window.alert("SUCCESS")
-                console.log("SUCCESS");
-                this.setState({ redirect: true })
-            }else{  
-                console.log(response.data);
-            }
+            localStorage.setItem('jwt_token',response.data.jwt)
+            console.log(localStorage.getItem('jwt_token'));
+            console.log("SUCCESS");
+            this.setState({ redirect: true })
         }
         ).catch((err) => {
             console.log(err);
-            window.alert("密碼或密碼錯誤")
+            window.alert("帳號或密碼錯誤")
+
+            
 
             // this.setState({ redirect: false })
         })
@@ -76,29 +74,29 @@ class UserLoginComponent extends React.Component {
         // console.log(this.state.redirect)
         if (this.state.redirect) {
             var path = {
-                pathname:'/UserListController',
-                state:this.state.userAccount
+                pathname: '/UserListController',
+                state: this.state.username
             }
-              return <Redirect push to={'/UserListController'} />;
+            return <Redirect push to={'/UserListController'} />;
             //   return <Redirect push to={'/UserListController/'}/>;
             // return <Link to='/UserListController' component={UserListComponent} />;
-            }
+        }
         return (
             <div>
                 <h1>連線帳號登入</h1>
 
                 <label>帳號：</label>
                 <input
-                    id="userAccount"
+                    id="username"
                     onChange={(e) => this.handleChange(e)}
-                    value={this.state.userAccount}
+                    value={this.state.username}
                 />
                 <br />
                 <label>密碼：</label>
                 <input type="password"
-                    id="userPassword"
+                    id="password"
                     onChange={(e) => this.handleChange(e)}
-                    value={this.state.userPassword}
+                    value={this.state.password}
                 />
                 <br />
                 <button onClick={this.userLogin}>確認</button>

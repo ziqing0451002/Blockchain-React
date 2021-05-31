@@ -55,9 +55,17 @@ class UserListComponent extends React.Component {
         UserService.getUserList().then((response) => {
             const data = response.data
             const user = data.map((item, index) => ({ ...item, id: item.connectAccount, number: index + 1 }))
-
             this.setState({ user })
             // console.log(this.state)
+        }
+        ).catch((err) => {  //若JWT過期要將用戶登出
+            // if (err.status(403)) {
+            //     window.alert("JWT過期")
+
+            // }
+            console.log(err);
+            this.setState({ modalOpen: false });
+            // this.setState({ redirect: false })
         })
     }
 
