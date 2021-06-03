@@ -1,16 +1,14 @@
 import axios from 'axios'
 
 const USERINFO_REST_API_URL = 'http://localhost:8000/api/account'
-const JWT_TOKEN = localStorage.getItem('jwt_token')
 const headers = {
-    'Authorization': 'Bearer ' + JWT_TOKEN,
+    'Authorization': 'Bearer ' + localStorage.getItem('jwt_token'),
     // "Access-Control-Allow-Origin": '*'
 };
 
 class UserService{
     getUserList(){
         console.log(localStorage.getItem('jwt_token'))
-        console.log(JWT_TOKEN)
         console.log(headers)
         return axios.get(USERINFO_REST_API_URL + "/getAccounts", {headers});
     }
