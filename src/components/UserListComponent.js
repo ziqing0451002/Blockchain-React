@@ -11,6 +11,7 @@ import UserService from '../service/UserService'
 import { Button } from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
 import { ContactsOutlined } from '@material-ui/icons';
+import { Redirect } from 'react-router';
 
 
 
@@ -23,7 +24,9 @@ class UserListComponent extends React.Component {
             user: [],
             modalOpen: false,
             selectedUser: '',
-            userPasswordCommit: ''
+            userPasswordCommit: '',
+            reLogin:false,
+            firstLogin:true
         }
     }
 
@@ -52,6 +55,9 @@ class UserListComponent extends React.Component {
         }];
 
     componentDidMount() {
+        setTimeout(function() { //Start the timer
+            this.setState({render: true}) //After 1 second, set render to true
+        }.bind(this), 5000)
         UserService.getUserList().then((response) => {
             const data = response.data
             const user = data.map((item, index) => ({ ...item, id: item.connectAccount, number: index + 1 }))
@@ -59,10 +65,14 @@ class UserListComponent extends React.Component {
             // console.log(this.state)
         }
         ).catch((err) => {  //若JWT過期要將用戶登出
-            // if (err.status(403)) {
-            //     window.alert("JWT過期")
+            const errString = err.toString()
+            if (errString.indexOf("403")) {
+                window.alert("登入逾期，請重新登入")
+                // window.location.reload();
+                this.setState({ reLogin: true })
 
-            // }
+            }
+
             console.log(err);
             this.setState({ modalOpen: false });
             // this.setState({ redirect: false })
@@ -122,7 +132,6 @@ class UserListComponent extends React.Component {
     }
 
     render() {
-
         console.log(this.state.selectedUser)
         const style = {
             backgroundColor: 'white',
@@ -131,6 +140,16 @@ class UserListComponent extends React.Component {
             padding: '8px',
             cursor: 'pointer'
         };
+
+        if (this.state.reLogin) {
+            var path = {
+                pathname: '/UserLoginController',
+                state: this.state.username
+            }
+            return <Redirect push to={'/UserLoginController'} />;
+            //   return <Redirect push to={'/UserListController/'}/>;
+            // return <Link to='/UserListController' component={UserListComponent} />;
+        }
         return (
             <div style={{ height: 400, width: '100%' }}>
                 <h1 align="left">連線帳號管理</h1>
@@ -140,12 +159,12 @@ class UserListComponent extends React.Component {
                     columns={this.columns}
                     pageSize={20}
                     onRowClick={(rowData) => this.setSelection(rowData)}
-                    // sortModel={[
-                    //     {
-                    //         field: 'createdTime',
-                    //         sort: 'asc',
-                    //     },
-                    // ]}
+                // sortModel={[
+                //     {
+                //         field: 'createdTime',
+                //         sort: 'asc',
+                //     },
+                // ]}
                 />
 
                 <Modal
